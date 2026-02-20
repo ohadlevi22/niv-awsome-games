@@ -153,7 +153,7 @@ function SetupScreen({ onStart }: { onStart: (photos: PhotoSource[]) => void }) 
 
       {/* Option 2: Upload Photos */}
       <div className="animate-fade-in-up" style={{ animationDelay: "200ms" }}>
-        <div className="game-card p-5">
+        <div className="game-card p-5" style={{ overflow: "visible" }}>
           <h2 className="font-display text-lg font-bold text-slate mb-1">
             Upload Your Own Photos
           </h2>
@@ -161,10 +161,9 @@ function SetupScreen({ onStart }: { onStart: (photos: PhotoSource[]) => void }) 
             Add 2-8 photos to create a custom game
           </p>
 
-          {/* Drop zone - uses <label> for native iOS file picker support */}
+          {/* Upload zone - input covers full area for reliable iOS tap handling */}
           <label
-            htmlFor="photo-upload"
-            className={`block border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
+            className={`relative block border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
               dragOver
                 ? "border-coral bg-coral/5 scale-[1.01]"
                 : "border-gray-200 hover:border-coral/50 hover:bg-coral/5"
@@ -174,12 +173,11 @@ function SetupScreen({ onStart }: { onStart: (photos: PhotoSource[]) => void }) 
             onDrop={handleDrop}
           >
             <input
-              id="photo-upload"
               type="file"
               accept="image/*"
               multiple
-              className="absolute w-px h-px overflow-hidden opacity-0"
-              style={{ clip: "rect(0,0,0,0)" }}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              style={{ zIndex: 10 }}
               onChange={handleFileChange}
             />
             <div className="text-4xl mb-2">📸</div>

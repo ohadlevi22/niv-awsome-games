@@ -69,7 +69,6 @@ function Confetti() {
 function SetupScreen({ onStart }: { onStart: (photos: PhotoSource[]) => void }) {
   const [uploadedPhotos, setUploadedPhotos] = useState<PhotoSource[]>([]);
   const [dragOver, setDragOver] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const nextIdRef = useRef(100);
 
   const processFiles = (files: FileList | File[]) => {
@@ -162,24 +161,25 @@ function SetupScreen({ onStart }: { onStart: (photos: PhotoSource[]) => void }) 
             Add 2-8 photos to create a custom game
           </p>
 
-          {/* Drop zone */}
-          <div
-            className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
+          {/* Drop zone - uses <label> for native iOS file picker support */}
+          <label
+            htmlFor="photo-upload"
+            className={`block border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
               dragOver
                 ? "border-coral bg-coral/5 scale-[1.01]"
                 : "border-gray-200 hover:border-coral/50 hover:bg-coral/5"
             }`}
-            onClick={() => fileInputRef.current?.click()}
             onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
             onDragLeave={() => setDragOver(false)}
             onDrop={handleDrop}
           >
             <input
-              ref={fileInputRef}
+              id="photo-upload"
               type="file"
               accept="image/*"
               multiple
-              className="hidden"
+              className="absolute w-px h-px overflow-hidden opacity-0"
+              style={{ clip: "rect(0,0,0,0)" }}
               onChange={handleFileChange}
             />
             <div className="text-4xl mb-2">📸</div>
@@ -189,7 +189,7 @@ function SetupScreen({ onStart }: { onStart: (photos: PhotoSource[]) => void }) 
             <p className="text-slate-light text-xs font-body mt-1">
               or drag & drop images here
             </p>
-          </div>
+          </label>
 
           {/* Uploaded photos preview */}
           {uploadedPhotos.length > 0 && (

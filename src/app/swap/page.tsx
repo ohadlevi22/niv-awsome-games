@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import Link from "next/link";
 import { PHOTOS } from "@/lib/photos";
 
-const GRID = 3;
+const GRID = 4;
 const TOTAL = GRID * GRID;
 
 function shufflePieces(): number[] {
@@ -25,7 +25,6 @@ export default function SwapPage() {
   const [selectedPiece, setSelectedPiece] = useState<number | null>(null);
   const [moves, setMoves] = useState(0);
   const [won, setWon] = useState(false);
-  const [showRef, setShowRef] = useState(false);
 
   const startGame = useCallback((photoIdx: number) => {
     setSelectedPhoto(photoIdx);
@@ -43,7 +42,6 @@ export default function SwapPage() {
     } else if (selectedPiece === index) {
       setSelectedPiece(null);
     } else {
-      // Swap
       const newPieces = [...pieces];
       [newPieces[selectedPiece], newPieces[index]] = [newPieces[index], newPieces[selectedPiece]];
       setPieces(newPieces);
@@ -64,10 +62,10 @@ export default function SwapPage() {
       <div className="max-w-2xl mx-auto px-4 py-6 md:py-10">
         <div className="text-center mb-8 animate-fade-in-up">
           <h1 className="font-display text-3xl md:text-4xl font-extrabold text-slate mb-1">
-            🔀 Puzzle Swap
+            🔀 Hard Puzzle
           </h1>
           <p className="text-slate-light font-body text-sm">
-            Choose a photo to unscramble!
+            Same game, 4x4 grid — more challenge!
           </p>
         </div>
         <div className="grid grid-cols-3 gap-3 md:gap-4 stagger-children">
@@ -100,10 +98,10 @@ export default function SwapPage() {
     <div className="max-w-lg mx-auto px-4 py-6 md:py-10">
       <div className="text-center mb-5 animate-fade-in-up">
         <h1 className="font-display text-3xl md:text-4xl font-extrabold text-slate mb-1">
-          🔀 Puzzle Swap
+          🔀 Hard Puzzle
         </h1>
         <p className="text-slate-light font-body text-sm">
-          Tap two pieces to swap them into the right place!
+          Tap two pieces to swap them!
         </p>
       </div>
 
@@ -116,40 +114,42 @@ export default function SwapPage() {
         </div>
         <div className="bg-white rounded-full px-4 py-2 shadow-sm">
           <span className="text-sm font-bold font-display text-teal">
-            {correctCount}/{TOTAL} correct
+            {correctCount}/{TOTAL}
           </span>
         </div>
         <div className="flex gap-2">
           <button
-            onClick={() => setShowRef(!showRef)}
-            className="bg-white rounded-full px-3 py-2 shadow-sm text-sm font-bold font-display text-slate-light hover:text-coral transition-colors"
-            title="Toggle reference"
-          >
-            {showRef ? "Hide" : "Hint"}
-          </button>
-          <button
             onClick={() => startGame(selectedPhoto)}
             className="bg-white rounded-full px-3 py-2 shadow-sm text-sm font-bold font-display text-slate-light hover:text-coral transition-colors"
           >
-            Reset
+            Shuffle
+          </button>
+          <button
+            onClick={() => setSelectedPhoto(null)}
+            className="bg-white rounded-full px-3 py-2 shadow-sm text-sm font-bold font-display text-slate-light hover:text-teal transition-colors"
+          >
+            Back
           </button>
         </div>
       </div>
 
       {/* Reference image */}
-      {showRef && (
-        <div className="flex justify-center mb-4 animate-scale-in">
+      <div className="flex justify-center mb-4">
+        <div className="relative">
           <img
             src={photo.src}
             alt="Reference"
-            className="w-32 h-32 md:w-40 md:h-40 object-cover rounded-xl shadow-lg border-2 border-white"
+            className="w-20 h-20 md:w-24 md:h-24 object-cover rounded-xl shadow-md border-2 border-white"
           />
+          <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white text-[10px] font-bold font-display text-slate-light px-2 py-0.5 rounded-full shadow-sm whitespace-nowrap">
+            Reference
+          </span>
         </div>
-      )}
+      </div>
 
       {/* Puzzle grid */}
       <div
-        className="grid gap-1.5 mx-auto rounded-2xl overflow-hidden p-1.5 bg-white shadow-xl"
+        className="grid gap-0.5 mx-auto rounded-2xl overflow-hidden p-1 bg-white shadow-xl"
         style={{
           maxWidth: "400px",
           gridTemplateColumns: `repeat(${GRID}, 1fr)`,
@@ -164,26 +164,25 @@ export default function SwapPage() {
           return (
             <div
               key={index}
-              className={`swap-piece aspect-square relative ${isSelected ? "selected" : ""} ${isCorrect ? "correct" : ""}`}
+              className="aspect-square relative cursor-pointer rounded-sm overflow-hidden transition-all duration-200"
+              style={{
+                backgroundImage: `url(${photo.src})`,
+                backgroundSize: `${GRID * 100}% ${GRID * 100}%`,
+                backgroundPosition: `${sourceCol * (100 / (GRID - 1))}% ${sourceRow * (100 / (GRID - 1))}%`,
+                outline: isSelected
+                  ? "3px solid #FF6B6B"
+                  : isCorrect
+                  ? "2px solid #4ECDC4"
+                  : "1px solid rgba(0,0,0,0.06)",
+                outlineOffset: isSelected ? "1px" : "0px",
+                transform: isSelected ? "scale(1.06)" : "scale(1)",
+                zIndex: isSelected ? 10 : 1,
+              }}
               onClick={() => handlePieceClick(index)}
             >
-              <div className="w-full h-full overflow-hidden rounded-md">
-                <img
-                  src={photo.src}
-                  alt=""
-                  className="absolute"
-                  draggable={false}
-                  style={{
-                    width: `${GRID * 100}%`,
-                    height: `${GRID * 100}%`,
-                    left: `-${sourceCol * 100}%`,
-                    top: `-${sourceRow * 100}%`,
-                  }}
-                />
-              </div>
               {isCorrect && (
-                <div className="absolute top-1 right-1 bg-teal text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
-                  ✓
+                <div className="absolute top-0.5 right-0.5 bg-teal text-white text-[8px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold shadow">
+                  &#10003;
                 </div>
               )}
             </div>
@@ -205,14 +204,14 @@ export default function SwapPage() {
       {won && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-40">
           <div className="bg-white rounded-3xl p-8 text-center max-w-sm mx-4 animate-bounce-in shadow-2xl">
-            <div className="w-32 h-32 mx-auto mb-4 rounded-xl overflow-hidden shadow-lg">
+            <div className="w-40 h-40 mx-auto mb-4 rounded-xl overflow-hidden shadow-lg">
               <img src={photo.src} alt="" className="w-full h-full object-cover" />
             </div>
             <h2 className="font-display text-3xl font-extrabold text-slate mb-2">
-              Perfect!
+              Amazing!
             </h2>
             <p className="font-body text-slate-light mb-6">
-              Solved in <span className="font-bold text-coral">{moves} swaps</span>
+              Solved 4x4 in <span className="font-bold text-coral">{moves} swaps</span>
             </p>
             <div className="flex gap-3 justify-center">
               <button onClick={() => startGame(selectedPhoto)} className="btn-primary">

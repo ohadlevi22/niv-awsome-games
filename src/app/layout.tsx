@@ -26,7 +26,7 @@ export default function RootLayout({
             <div className="flex gap-5 text-sm font-body">
               <Link href="/memory" className="nav-link">Memory</Link>
               <Link href="/puzzle" className="nav-link">Puzzle</Link>
-              <Link href="/swap" className="nav-link">Swap</Link>
+              <Link href="/swap" className="nav-link">Hard</Link>
               <Link href="/reveal" className="nav-link">Reveal</Link>
             </div>
           </div>

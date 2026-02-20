@@ -1,0 +1,403 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #FFF8F0;
+  --card: #FFFFFF;
+  --primary: #FF6B6B;
+  --secondary: #4ECDC4;
+  --accent: #FFE66D;
+  --text: #2C3E50;
+  --text-light: #7F8C8D;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Warm paper-like background texture */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(255, 107, 107, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(78, 205, 196, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(255, 230, 109, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ========== ANIMATIONS ========== */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-3deg); }
+  75% { transform: rotate(3deg); }
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4); }
+  50% { box-shadow: 0 0 0 12px rgba(255, 107, 107, 0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes bounce-in {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.15); }
+  70% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes flip {
+  0% { transform: perspective(600px) rotateY(0deg); }
+  100% { transform: perspective(600px) rotateY(180deg); }
+}
+
+@keyframes flip-back {
+  0% { transform: perspective(600px) rotateY(180deg); }
+  100% { transform: perspective(600px) rotateY(0deg); }
+}
+
+@keyframes celebrate {
+  0% { transform: scale(1); }
+  10% { transform: scale(1.1) rotate(-3deg); }
+  20% { transform: scale(1.1) rotate(3deg); }
+  30% { transform: scale(1.1) rotate(-3deg); }
+  40% { transform: scale(1.1) rotate(3deg); }
+  50% { transform: scale(1); }
+  100% { transform: scale(1); }
+}
+
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+.animate-scale-in { animation: scaleIn 0.5s ease-out forwards; }
+.animate-wiggle { animation: wiggle 0.5s ease-in-out; }
+.animate-bounce-in { animation: bounce-in 0.5s ease-out forwards; }
+.animate-slide-in-right { animation: slide-in-right 0.4s ease-out forwards; }
+.animate-celebrate { animation: celebrate 0.8s ease-in-out; }
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Staggered children */
+.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 80ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 160ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 240ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 320ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 400ms; }
+.stagger-children > *:nth-child(7) { animation-delay: 480ms; }
+.stagger-children > *:nth-child(8) { animation-delay: 560ms; }
+
+/* ========== CARD STYLES ========== */
+
+.game-card {
+  background: var(--card);
+  border-radius: 20px;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 10px 30px -5px rgba(0, 0, 0, 0.08);
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.game-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  border: 2px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+.game-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow:
+    0 12px 24px -4px rgba(0, 0, 0, 0.1),
+    0 20px 50px -8px rgba(0, 0, 0, 0.12);
+}
+
+.game-card:hover::before {
+  border-color: var(--primary);
+}
+
+/* ========== MEMORY CARD ========== */
+
+.memory-card-container {
+  perspective: 800px;
+}
+
+.memory-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+
+.memory-card.flipped {
+  transform: rotateY(180deg);
+}
+
+.memory-card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.memory-card-back {
+  transform: rotateY(180deg);
+}
+
+.memory-card-front {
+  background: linear-gradient(135deg, var(--primary), #FF8E8E);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.memory-card-front::after {
+  content: '?';
+  font-family: 'Baloo 2', cursive;
+  font-size: 2rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.memory-card.matched {
+  animation: pulse-glow 1s ease-out;
+}
+
+.memory-card.matched .memory-card-front {
+  background: linear-gradient(135deg, var(--secondary), #6FE8DF);
+}
+
+/* ========== PUZZLE STYLES ========== */
+
+.puzzle-tile {
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  cursor: pointer;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.puzzle-tile:hover {
+  filter: brightness(1.05);
+}
+
+.puzzle-tile.empty {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ========== SWAP STYLES ========== */
+
+.swap-piece {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.swap-piece:hover {
+  transform: scale(1.05);
+  z-index: 10;
+}
+
+.swap-piece.selected {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+  transform: scale(1.08);
+  z-index: 10;
+}
+
+.swap-piece.correct {
+  outline: 3px solid var(--secondary);
+  outline-offset: 2px;
+}
+
+/* ========== REVEAL STYLES ========== */
+
+.reveal-block {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.reveal-block:hover {
+  filter: brightness(1.2);
+  transform: scale(1.05);
+}
+
+.reveal-block.removed {
+  transform: scale(0) rotate(180deg);
+  opacity: 0;
+}
+
+/* ========== CONFETTI ========== */
+
+.confetti-piece {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  top: -20px;
+  animation: confetti-fall linear forwards;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+/* ========== BUTTON STYLES ========== */
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), #FF8E8E);
+  color: white;
+  font-family: 'Baloo 2', cursive;
+  font-weight: 700;
+  padding: 12px 28px;
+  border-radius: 50px;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, var(--secondary), #6FE8DF);
+  color: white;
+  font-family: 'Baloo 2', cursive;
+  font-weight: 700;
+  padding: 10px 24px;
+  border-radius: 50px;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4);
+}
+
+/* ========== NAV ========== */
+
+.nav-link {
+  position: relative;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 4px 0;
+  transition: color 0.3s;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 2.5px;
+  background: var(--primary);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover {
+  color: var(--primary);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* ========== RESPONSIVE ========== */
+
+@media (max-width: 640px) {
+  .memory-card-front::after {
+    font-size: 1.4rem;
+  }
+}
